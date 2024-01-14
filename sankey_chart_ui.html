@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style>
+        #sankey_basic {
+            margin: 0 auto;
+        }
+    </style>
+    <title>Document</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { packages: ['sankey'] });
+        // google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart(cashflowData) {
+            var data = new google.visualization.DataTable();
+            var formatter = new google.visualization.NumberFormat({ pattern: '$###.##' });
+            var rows = [];
+            data.addColumn('string', 'From');
+            data.addColumn('string', 'To');
+            data.addColumn('number', 'Weight');
+            data.addColumn({ type: 'string', role: 'tooltip' });
+
+            var totalExpense = 0;
+            var totalRefunds = 0;
+            for (var expense of cashflowData.expense) {
+                if (expense.amount <= 0) {
+                    const expense_amount = expense.amount * -1;
+                    totalExpense += expense_amount;
+                    rows.push(['Expense', expense.source, expense_amount]);
+                } else {
+                    // Handle "positive" expenses as inflow/refund.
+                    totalRefunds += expense.amount;
+                    rows.push([expense.source, 'Refund', expense.amount]);
+                }
+            }
+            rows.push(['Refund', 'Inflow', totalRefunds]);
+
+            var totalSavings = 0;
+            var totalWithdrawals = 0;
+            for (var saving of cashflowData.savings) {
+                if (saving.amount >= 0) {
+                    totalSavings += saving.amount;
+                    rows.push(['Savings', saving.source, saving.amount]);
+                } else {
+                    totalWithdrawals += saving.amount * -1;
+                    // data.addRow([saving.source, 'Withdrawals', saving.amount * -1]);
+                }
+            }
+            var totalInflow = 0;
+            for (var income of cashflowData.income) {
+                totalInflow += income.amount;
+            }
+            rows.push(['Withdrawals', 'Inflow', totalWithdrawals]);
+            var extra_savings = totalInflow + totalRefunds + totalWithdrawals - totalExpense - totalSavings;
+            if (extra_savings > 100) {
+                rows.push(['Inflow', 'Unaccounted', extra_savings]);
+            } else if (extra_savings < -100) {
+                rows.push(['Overage', 'Inflow', -1 * extra_savings]);
+            }
+            for (var income of cashflowData.income) {
+                rows.push([income.source, 'Inflow', income.amount]);
+            }
+            rows.push(['Inflow', 'Savings', totalSavings]);
+            rows.push(['Inflow', 'Expense', totalExpense]);
+            data.addRows(rows.map((r) => {
+                r.push(r[0] + " => " + r[1] + ": " + formatter.formatValue(r[2]))
+                return r;
+            }))
+
+            // Sets chart options.
+            var options = {
+                width: 500,
+                height: 600,
+                sankey: {
+                    iterations: 32,
+                    node: {
+                        interactivity: true,
+                    }
+                }
+            };
+
+            // Instantiates and draws our chart, passing in some options.
+            var chart = new google.visualization.Sankey(document.getElementById('sankey_basic'));
+            chart.draw(data, options);
+        }
+    </script>
+    <script>
+        function getData(start_date, end_date) {
+            console.log(start_date);
+            google.script.run.withSuccessHandler(drawChart).getCashFlowData(start_date, end_date);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(today.getMonth() - 1);
+            document.getElementById('start_date').valueAsDate = oneMonthAgo;
+            document.getElementById('end_date').valueAsDate = today;
+        });
+        // google.charts.setOnLoadCallback(getData);
+    </script>
+</head>
+
+<body>
+    <div class="content">
+        <!-- Add 2 date inputs to take start and end date as input -->
+        <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" />
+            <label for="end_date">End Date</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" />
+            <button type="button" class="btn btn-primary"
+                onclick="getData(document.getElementById('start_date').value, document.getElementById('end_date').value)">Make
+                Chart</button>
+
+        </div>
+        <div id="sankey_basic"></div>
+    </div>
+</body>
+
+</html>
