@@ -6,8 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <style>
+        body {
+            /*Take up all the vertical space*/
+            min-height: 100vh;
+            display: flex;
+            margin: 0;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            /*Grow to the full size of the body*/
+            flex-grow: 1;
+        }
+
         #sankey_basic {
-            margin: 0 auto;
+            /*let it fill up the remaining space after the form*/
+            flex-grow: 1;
         }
     </style>
     <title>Document</title>
@@ -72,10 +87,12 @@
                 return r;
             }))
 
+            var sankey_div = document.getElementById('sankey_basic');
+
             // Sets chart options.
             var options = {
-                width: 500,
-                height: 600,
+                width: sankey_div.offsetWidth - 24,
+                height: sankey_div.offsetHeight - 24,
                 sankey: {
                     iterations: 32,
                     node: {
@@ -85,7 +102,7 @@
             };
 
             // Instantiates and draws our chart, passing in some options.
-            var chart = new google.visualization.Sankey(document.getElementById('sankey_basic'));
+            var chart = new google.visualization.Sankey(sankey_div);
             chart.draw(data, options);
         }
     </script>
