@@ -11,10 +11,34 @@ Apps Script code to generate a Sankey chart for cash flow based on your transact
 - Please star the repo if you find it useful.
 
 ## Installation Instructions
+- Install [`homebrew`](https://brew.sh/) if you don't have it already.
+- Install `node`
+    - From a terminal, 
+    ```
+    brew install node
+    ```
+- Install [`clasp`](https://github.com/google/clasp)
+    - From a terminal (you may have to close the terminal where you installed node and open a new terminal window),
+    ```
+    npm install -g @google/clasp
+    ```
+- Login to `clasp` in a terminal and follow the prompts.
+```
+clasp login
+```
+- Create an Apps Script project from your Google Sheet by going to "Extensions" -> "Apps Script". The URL should look like "https://script.google.com/u/0/home/projects/script_id/edit". Note this script_id in the URL. We'll use it in a following step.
 - Clone this repo locally.
-- Create an Apps Script project from your Google Sheet by going to "Extensions" -> "Apps Script". The URL should look like "https://script.google.com/u/0/home/projects/script_id/edit"
-- Install Clasp and [clone](https://developers.google.com/apps-script/guides/clasp#clone_an_existing_project) the project from the previous step.
-- Run `clasp push` on your local machine from the repo base path.
+    - From a terminal,
+    ```
+    git clone https://github.com/purujit/tiller_sankey_cashflow.git
+    ```
+- From the same terminal. Use the script_id from the prior step.
+```
+cd tiller_sankey_cashflow
+clasp clone <script_id_from_your_appscript_project>
+clasp push -P
+```
+- Go back to your Apps Script project and if there are multiple `Code.js` files, delete the empty one. If both are non-empty, you probably already created another apps script and you already know what to do. 
 
 ## Usage Instructions
 - After installing the script, refresh your Tiller sheet.  You should see a new menu item appear called "Cash Flow" after a few seconds.
