@@ -26,6 +26,12 @@ jobs:
       - run: yarn install --frozen-lockfile
       - name: "Build"
         run: yarn build
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: "zip"
+          path: "build"
+          filename: "release.zip"
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -33,4 +39,4 @@ jobs:
           automatic_release_tag: "latest"
           title: "Release Build"
           files: |
-            build/*
+            release.zip
