@@ -33,5 +33,4 @@ jobs:
           automatic_release_tag: "latest"
           title: "Release Build"
           files: |
-            *.gs
-            *.html
+            build/*
