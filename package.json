@@ -9,6 +9,11 @@
   "dependencies": {
     "@google/clasp": "^2.4.2",
     "@types/google-apps-script": "^1.0.78",
-    "global": "^4.4.0"
+    "global": "^4.4.0",
+    "ts2gas": "^4.2.0"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "node build.js"
   }
 }
