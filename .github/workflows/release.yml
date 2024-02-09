@@ -30,7 +30,7 @@ jobs:
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: "zip"
-          path: "build"
+          directory: "build"
           filename: "release.zip"
 
       - uses: "marvinpinto/action-automatic-releases@latest"
