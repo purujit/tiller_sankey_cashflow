@@ -10,7 +10,14 @@ Apps Script code to generate a Sankey chart for cash flow based on your transact
 - Feel free to fork and send a PR if you spot a bug or improvement.
 - Please star the repo if you find it useful.
 
-## Installation Instructions
+# Installation Instructions
+- Find the "Releases" section on the right of the Github page and follow the link.
+- Go to downloads and download `release.zip`.
+- Unzip the file.
+- Create an Apps Script project from your Google Sheet by going to "Extensions" -> "Apps Script". It should show you an Editor with some files in the left pane.
+- Copy all the files from the release into your apps script project. Note that you'll need to replace the Code.gs file that is created by default and is empty with the one in the release.
+
+## Installation from Source Instructions
 - Install [`homebrew`](https://brew.sh/) if you don't have it already.
 - Install `node`
     - From a terminal, 
