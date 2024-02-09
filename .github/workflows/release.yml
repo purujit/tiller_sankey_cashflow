@@ -39,4 +39,4 @@ jobs:
           automatic_release_tag: "latest"
           title: "Release Build"
           files: |
-            release.zip
+            build/release.zip
