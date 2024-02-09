@@ -18,6 +18,7 @@
             flex-direction: column;
             /*Grow to the full size of the body*/
             flex-grow: 1;
+            gap: 4px;
         }
 
         #sankey_basic {
@@ -88,11 +89,16 @@
             }))
 
             var sankey_div = document.getElementById('sankey_basic');
+            var sizeElement = document.getElementById('chart_size');
+            var size = sizeElement.valueAsNumber;
+            if (!size) {
+                size = sankey_div.offsetWidth - 40;
+            }
 
             // Sets chart options.
             var options = {
-                width: sankey_div.offsetWidth - 24,
-                height: sankey_div.offsetHeight - 24,
+                width: size,
+                height: size,
                 sankey: {
                     iterations: 32,
                     node: {
@@ -130,6 +136,7 @@
             <input type="date" class="form-control" id="start_date" name="start_date" />
             <label for="end_date">End Date</label>
             <input type="date" class="form-control" id="end_date" name="end_date" />
+            <input type="number" class="form-control" id="chart_size" name="size" placeholder="Chart Size (optional)" />
             <button type="button" class="btn btn-primary"
                 onclick="getData(document.getElementById('start_date').value, document.getElementById('end_date').value)">Make
                 Chart</button>

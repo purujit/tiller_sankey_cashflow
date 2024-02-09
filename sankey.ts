@@ -59,6 +59,25 @@ function getCashFlowData(fromDateString: string, toDateString: string): CashFlow
         savings.push({ source, amount: savingsByGroup[source] });
     }
 
+    var dumpData = false;
+    if (dumpData === true) {
+        const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+        var col = 1;
+        for (const edgeType of [income, expense, savings]) {
+            const sources = edgeType.map(e => e.source);
+            const amounts = edgeType.map(e => e.amount);
+            const sourcesRange = sheet.getRange(1, col, sources.length, 1);
+            // Create an 2D array with sources.length rows and 1 column.
+            var sourcesArray = sources.map(s => [s]);
+            sourcesRange.setValues(sourcesArray);
+            col += 1;
+            const amountsRange = sheet.getRange(1, col, amounts.length, 1);
+            var amountsArray = amounts.map(a => [a]);
+            amountsRange.setValues(amountsArray);
+            col += 1;
+        }
+    }
+
     return { income, expense, savings };
 }
 
