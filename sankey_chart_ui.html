@@ -25,9 +25,21 @@
             /*let it fill up the remaining space after the form*/
             flex-grow: 1;
         }
+
+        .download__disabled {
+            display: none;
+        }
+
+        .download__enabled {
+            display: inline;
+            align-self: center;
+        }
     </style>
     <title>Document</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
         google.charts.load('current', { packages: ['sankey'] });
         // google.charts.setOnLoadCallback(drawChart);
@@ -92,7 +104,7 @@
             var sizeElement = document.getElementById('chart_size');
             var size = sizeElement.valueAsNumber;
             if (!size) {
-                size = sankey_div.offsetWidth - 40;
+                size = sankey_div.offsetWidth - 64;
             }
 
             // Sets chart options.
@@ -109,13 +121,25 @@
 
             // Instantiates and draws our chart, passing in some options.
             var chart = new google.visualization.Sankey(sankey_div);
+            google.visualization.events.addListener(chart, 'ready', function () {
+                var downloadButton = document.getElementById("download");
+                downloadButton.classList.remove('download__disabled');
+                downloadButton.classList.add('download__enabled');
+                var html2obj = html2canvas(document.querySelector('#sankey_basic')).then(function (canvas) {
+                    downloadButton.href = canvas.toDataURL();
+                });
+            });
             chart.draw(data, options);
         }
     </script>
     <script>
         function getData(start_date, end_date) {
             console.log(start_date);
-            google.script.run.withSuccessHandler(drawChart).getCashFlowData(start_date, end_date);
+            google.script.run.withSuccessHandler(drawChart).withFailureHandler(showError).getCashFlowData(start_date, end_date);
+        }
+
+        function showError(error) {
+            alert(error);
         }
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
@@ -124,7 +148,6 @@
             document.getElementById('start_date').valueAsDate = oneMonthAgo;
             document.getElementById('end_date').valueAsDate = today;
         });
-        // google.charts.setOnLoadCallback(getData);
     </script>
 </head>
 
@@ -142,6 +165,7 @@
                 Chart</button>
 
         </div>
+        <a id="download" download class="download__disabled">Download Chart</a>
         <div id="sankey_basic"></div>
     </div>
 </body>

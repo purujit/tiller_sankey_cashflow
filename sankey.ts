@@ -33,8 +33,11 @@ function getCashFlowData(fromDateString: string, toDateString: string): CashFlow
     const savingsTotalsByAccount: { [key: string]: number } = {};
     for (const transaction of transactions) {
         categoryTotals[transaction.category] = (categoryTotals[transaction.category] || 0) + transaction.amount;
-        const tillerAccountId = transaction.account.substring(transaction.account.length - 4).toLowerCase();
         if (SAVINGS_TRANSACTIONS.includes(transaction.category)) {
+            if (!transaction.account) {
+                throw new Error(`Savings transactions must have an account id in ${ACCOUNT_ID_COL_NAME} column. Missing in ${JSON.stringify(transaction)}`);
+            }
+            const tillerAccountId = transaction.account.substring(transaction.account.length - 4).toLowerCase();
             savingsTotalsByAccount[tillerAccountId] = (savingsTotalsByAccount[tillerAccountId] || 0) + transaction.amount;
         }
     }
